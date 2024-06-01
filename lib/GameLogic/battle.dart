@@ -1,7 +1,11 @@
 import 'dart:math';
 
+import 'package:poke_battle/screens/battle_screen.dart';
+
 import '../Model/pokemon.dart';
 import '../Model/move.dart';
+import '../Model/weather.dart';
+import '../main.dart';
 const typeEffectiveness = {
   'NORMAL': {'ROCK': 0.5, 'GHOST': 0, 'STEEL': 0.5},
   'FIRE': {'FIRE': 0.5, 'WATER': 0.5, 'GRASS': 2, 'ICE': 2, 'BUG': 2, 'ROCK': 0.5, 'DRAGON': 0.5, 'STEEL': 2},
@@ -24,12 +28,13 @@ const typeEffectiveness = {
 };
 
 class Battle {
+
   Pokemon pokemon1;
   Pokemon pokemon2;
   Move? move1;
   Move? move2;
-//String Environment
-  Battle({required this.pokemon1, required this.pokemon2});
+WeatherState weatherobj;
+  Battle({required this.pokemon1, required this.pokemon2, required this.weatherobj});
 
   void selectMove(Move move, bool isPokemon1) {
     if (isPokemon1) {
@@ -86,17 +91,132 @@ class Battle {
 //     // Add other abilities logic here
 //     return 1.0;
 //   }
-
-  String executeMove(Pokemon attacker, Pokemon defender, Move move) {
+  void updateWeather(Weather newWeather) {
+    // print(newWeather);
+    weatherobj.updateWeather(newWeather);
+// print(WeatherState().w);
+  }
+  String executeMove(Pokemon attacker, Pokemon defender, Move move, weatherIndex) {
     if (move.pp <= 0) {
       return '${move.name} has no PP left!\n';
     }
     move.pp -= 1;
+
+    //////////////weather effect
+      String weatherEffect='';
+      int? pow, acc, defSD;
+    if(weatherIndex) {
+      switch (weatherobj.getWeather()) {
+        case Weather.none:
+          break;
+        case Weather.intenseSun:
+          if (move.type == 'FIRE') {
+            pow = move.power;
+            move.power = (move.power * 2).round();
+          } else if (move.type == 'WATER') {
+            pow = move.power;
+            move.power = (move.power * 0.5).round();
+            // } else if (move.name == 'Solar Beam' || move.name == 'Solar Blade') {
+            // move.chargingRequired = false;
+          } else if (move.name == 'Thunder' || move.name == 'Hurricane') {
+            acc = move.accuracy;
+            move.accuracy = (move.accuracy * 0.5).round();
+          }
+          // if (move.name == 'Synthesis' || move.name == 'Morning Sun' || move.name == 'Moonlight') {
+          // move.healingPower = (move.healingPower * 2).round(); // Strengthened healing moves
+          // }
+          weatherEffect = "The sun is shining intensely!\n";
+
+        case Weather.rain:
+          if (move.type == 'WATER') {
+            pow = move.power;
+            move.power = (move.power * 2).round();
+          } else if (move.type == 'FIRE') {
+            pow = move.power;
+            move.power = (move.power * 0.5).round();
+          } else if (move.name == 'Thunder' || move.name == 'Hurricane') {
+            acc = move.accuracy;
+            move.accuracy = 100;
+          }
+
+          // if (move.name == 'Synthesis' || move.name == 'Morning Sun' || move.name == 'Moonlight') {
+          // move.healingPower = (move.healingPower * 0.5).round(); // Weakened healing moves
+          // }
+          weatherEffect = "It's raining heavily!\n";
+
+        case Weather.hail:
+          if (!attacker.type.contains('ICE')) {
+            int hailDamage = ((0.0625) * attacker.maxHp)
+                .round(); // Hail damage is 1/16 of max HP
+            attacker.hp -= hailDamage;
+            weatherEffect =
+            "${attacker.name} is buffeted by the hail! Damage $hailDamage\n";
+          }
+          if (!defender.type.contains('ICE')) {
+            int hailDamage = ((0.0625) * defender.maxHp)
+                .round(); // Hail damage is 1/16 of max HP
+            defender.hp -= hailDamage;
+            weatherEffect =
+            "${defender.name} is buffeted by the hail! Damage $hailDamage\n";
+          }
+          if (move.name == 'Blizzard') {
+            acc = move.accuracy;
+            move.accuracy = 100; // Blizzard guaranteed hit in hail
+          }
+
+          // if (move.name == 'Synthesis' || move.name == 'Morning Sun' || move.name == 'Moonlight') {
+          //   move.healingPower = (move.healingPower * 0.5).round(); // Weakened healing moves
+          // }
+          weatherEffect = "Hail is pelting down!\n";
+
+        case Weather.sandstorm:
+          if (!attacker.type.contains('ROCK') &&
+              !attacker.type.contains('GROUND') &&
+              !attacker.type.contains('STEEL')) {
+            int sandstormDamage = ((0.0625) * attacker.maxHp)
+                .round(); // Sandstorm damage is 1/16 of max HP
+            attacker.hp -= sandstormDamage;
+            weatherEffect = "${attacker
+                .name} is buffeted by the sandstorm! Damage $sandstormDamage\n";
+          }
+          if (!defender.type.contains('ROCK') &&
+              !defender.type.contains('GROUND') &&
+              !defender.type.contains('STEEL')) {
+            int sandstormDamage = ((0.0625) * defender.maxHp)
+                .round(); // Sandstorm damage is 1/16 of max HP
+            defender.hp -= sandstormDamage;
+            weatherEffect = "${defender
+                .name} is buffeted by the sandstorm! Damage $sandstormDamage\n";
+            if (defender.type.contains('ROCK')) {
+              defSD = defender.specialDefense;
+              defender.specialDefense = (defender.specialDefense * 1.5)
+                  .round(); // Rock-types get 50% extra special defense
+            }
+          }
+
+          // if (move.name == 'Synthesis' || move.name == 'Morning Sun' || move.name == 'Moonlight') {
+          //   move.healingPower = (move.healingPower * 0.5).round(); // Weakened healing moves
+          // }
+
+          weatherEffect = "A sandstorm is raging!\n";
+
+        default:
+          weatherEffect = '';
+      }
+    }
+    //////////////weather effect
+
     if (willHit(attacker,defender,move)) {
     double typeEffectiveness = getTypeEffectiveness(move.type, defender.type);
     double abilityEffectiveness = 1.0;
     // getAbilityEffectiveness(attacker, move);
 // print(abilityEffectiveness);
+      /////////////////weather call
+      // if(weather!=)
+      updateWeather(Weather.rain);
+      print("data");
+      /////////////////weather call
+
     int damage;
     if (move.style == "special") {
       damage = ((0.5 * move.power *
@@ -105,14 +225,19 @@ class Battle {
     } else {
       damage = ((0.5 * move.power * (attacker.attack / defender.defense) *
           typeEffectiveness * abilityEffectiveness)).round();
+
     }
 
     defender.receiveDamage(damage);
+    (pow!=null)?move.power=pow:null;
+    (acc!=null)?move.accuracy=acc:null;
+    (defSD!=null)?defender.specialDefense=defSD:null;
+
     return '${attacker.name} uses ${move.name} on ${defender
-        .name} for $damage damage! (Type Effectiveness: ${typeEffectiveness}x)\n';
+        .name} for $damage damage! (Type Effectiveness: ${typeEffectiveness}x)\n$weatherEffect';
   }
     else{
-      return "${attacker.name}'s ${move.name} doesn't hit!\n";
+      return "${attacker.name}'s ${move.name} doesn't hit!\n$weatherEffect";
     }
 
   }
@@ -122,7 +247,6 @@ class Battle {
       return 'Both Pokémon must select a move before the battle can proceed.';
     }
 
-    // Determine attack order based on move priority and speed
     if (move1!.alwaysGoFirst != move2!.alwaysGoFirst) {
       if (move1!.alwaysGoFirst) {
         return _processMoveOrder(pokemon1, pokemon2, move1!, move2!);
@@ -143,9 +267,9 @@ class Battle {
   String _processMoveOrder(Pokemon first, Pokemon second, Move firstMove, Move secondMove) {
     String result = '';
 
-    result += executeMove(first, second, firstMove);
+    result += executeMove(first, second, firstMove,false);
     if (!second.isFainted) {
-      result += executeMove(second, first, secondMove);
+      result += executeMove(second, first, secondMove,true);
     }
 
     if (pokemon1.isFainted) {

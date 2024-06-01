@@ -4,7 +4,7 @@ import '../Model/pokemon.dart';
 class PokemonInfoCard extends StatelessWidget {
   final Pokemon pokemon;
 
-  PokemonInfoCard({required this.pokemon});
+  const PokemonInfoCard({super.key, required this.pokemon});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +16,9 @@ class PokemonInfoCard extends StatelessWidget {
           children: [
             Text(
               pokemon.name,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text('HP: ${pokemon.hp}'),
             Text('Attack: ${pokemon.attack}'),
             Text('Defense: ${pokemon.defense}'),
@@ -29,8 +29,8 @@ class PokemonInfoCard extends StatelessWidget {
             Text('Type: ${pokemon.type.join(", ")}'),
             Text('Level: ${pokemon.level}'),
 
-            SizedBox(height: 8),
-            Text('Moves:'),
+            const SizedBox(height: 8),
+            const Text('Moves:'),
             for (var move in pokemon.moves)
               Text('${move.name} (${move.type}) - ${move.power} Power, ${move.pp} PP'),
           ],

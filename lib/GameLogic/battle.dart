@@ -1,30 +1,28 @@
 import 'dart:math';
 
-import 'package:poke_battle/screens/battle_screen.dart';
 
 import '../Model/pokemon.dart';
 import '../Model/move.dart';
 import '../Model/weather.dart';
-import '../main.dart';
 const typeEffectiveness = {
-  'NORMAL': {'ROCK': 0.5, 'GHOST': 0, 'STEEL': 0.5},
-  'FIRE': {'FIRE': 0.5, 'WATER': 0.5, 'GRASS': 2, 'ICE': 2, 'BUG': 2, 'ROCK': 0.5, 'DRAGON': 0.5, 'STEEL': 2},
-  'WATER': {'FIRE': 2, 'WATER': 0.5, 'GRASS': 0.5, 'GROUND': 2, 'ROCK': 2, 'DRAGON': 0.5},
-  'ELECTRIC': {'WATER': 2, 'ELECTRIC': 0.5, 'GRASS': 0.5, 'GROUND': 0, 'FLYING': 2, 'DRAGON': 0.5},
-  'GRASS': {'FIRE': 0.5, 'WATER': 2, 'GRASS': 0.5, 'POISON': 0.5, 'GROUND': 2, 'FLYING': 0.5, 'BUG': 0.5, 'ROCK': 2, 'DRAGON': 0.5, 'STEEL': 0.5},
-  'ICE': {'FIRE': 0.5, 'WATER': 0.5, 'GRASS': 2, 'ICE': 0.5, 'GROUND': 2, 'FLYING': 2, 'DRAGON': 2, 'STEEL': 0.5},
-  'FIGHTING': {'NORMAL': 2, 'ICE': 2, 'POISON': 0.5, 'FLYING': 0.5, 'PSYCHIC': 0.5, 'BUG': 0.5, 'ROCK': 2, 'GHOST': 0, 'DARK': 2, 'STEEL': 2, 'FAIRY': 0.5},
-  'POISON': {'GRASS': 2, 'POISON': 0.5, 'GROUND': 0.5, 'ROCK': 0.5, 'GHOST': 0.5, 'STEEL': 0, 'FAIRY': 2},
-  'GROUND': {'FIRE': 2, 'ELECTRIC': 2, 'GRASS': 0.5, 'POISON': 2, 'FLYING': 0, 'BUG': 0.5, 'ROCK': 2, 'STEEL': 2},
-  'FLYING': {'ELECTRIC': 0.5, 'GRASS': 2, 'FIGHTING': 2, 'BUG': 2, 'ROCK': 0.5, 'STEEL': 0.5},
-  'PSYCHIC': {'FIGHTING': 2, 'POISON': 2, 'PSYCHIC': 0.5, 'DARK': 0, 'STEEL': 0.5},
-  'BUG': {'FIRE': 0.5, 'GRASS': 2, 'FIGHTING': 0.5, 'POISON': 0.5, 'FLYING': 0.5, 'PSYCHIC': 2, 'GHOST': 0.5, 'DARK': 2, 'STEEL': 0.5, 'FAIRY': 0.5},
-  'ROCK': {'FIRE': 2, 'ICE': 2, 'FIGHTING': 0.5, 'GROUND': 0.5, 'FLYING': 2, 'BUG': 2, 'STEEL': 0.5},
-  'GHOST': {'NORMAL': 0, 'PSYCHIC': 2, 'GHOST': 2, 'DARK': 0.5},
-  'DRAGON': {'DRAGON': 2, 'STEEL': 0.5, 'FAIRY': 0},
-  'DARK': {'FIGHTING': 0.5, 'PSYCHIC': 2, 'GHOST': 2, 'DARK': 0.5, 'FAIRY': 0.5},
-  'STEEL': {'FIRE': 0.5, 'WATER': 0.5, 'ELECTRIC': 0.5, 'ICE': 2, 'ROCK': 2, 'STEEL': 0.5, 'FAIRY': 2},
-  'FAIRY': {'FIRE': 0.5, 'FIGHTING': 2, 'POISON': 0.5, 'DRAGON': 2, 'DARK': 2, 'STEEL': 0.5},
+  MoveType.normal: {PokemonType.rock: 0.5, PokemonType.ghost: 0, PokemonType.steel: 0.5},
+  MoveType.fire: {PokemonType.fire: 0.5, PokemonType.water: 0.5, PokemonType.grass: 2, PokemonType.ice: 2, PokemonType.bug: 2, PokemonType.rock: 0.5, PokemonType.dragon: 0.5, PokemonType.steel: 2},
+  MoveType.water: {PokemonType.fire: 2, PokemonType.water: 0.5, PokemonType.grass: 0.5, PokemonType.ground: 2, PokemonType.rock: 2, PokemonType.dragon: 0.5},
+  MoveType.electric: {PokemonType.water: 2, PokemonType.electric: 0.5, PokemonType.grass: 0.5, PokemonType.ground: 0, PokemonType.flying: 2, PokemonType.dragon: 0.5},
+  MoveType.grass: {PokemonType.fire: 0.5, PokemonType.water: 2, PokemonType.grass: 0.5, PokemonType.poison: 0.5, PokemonType.ground: 2, PokemonType.flying: 0.5, PokemonType.bug: 0.5, PokemonType.rock: 2, PokemonType.dragon: 0.5, PokemonType.steel: 0.5},
+  MoveType.ice: {PokemonType.fire: 0.5, PokemonType.water: 0.5, PokemonType.grass: 2, PokemonType.ice: 0.5, PokemonType.ground: 2, PokemonType.flying: 2, PokemonType.dragon: 2, PokemonType.steel: 0.5},
+  MoveType.fighting: {PokemonType.normal: 2, PokemonType.ice: 2, PokemonType.poison: 0.5, PokemonType.flying: 0.5, PokemonType.psychic: 0.5, PokemonType.bug: 0.5, PokemonType.rock: 2, PokemonType.ghost: 0, PokemonType.dark: 2, PokemonType.steel: 2, PokemonType.fairy: 0.5},
+  MoveType.poison: {PokemonType.grass: 2, PokemonType.poison: 0.5, PokemonType.ground: 0.5, PokemonType.rock: 0.5, PokemonType.ghost: 0.5, PokemonType.steel: 0, PokemonType.fairy: 2},
+  MoveType.ground: {PokemonType.fire: 2, PokemonType.electric: 2, PokemonType.grass: 0.5, PokemonType.poison: 2, PokemonType.flying: 0, PokemonType.bug: 0.5, PokemonType.rock: 2, PokemonType.steel: 2},
+  MoveType.flying: {PokemonType.electric: 0.5, PokemonType.grass: 2, PokemonType.fighting: 2, PokemonType.bug: 2, PokemonType.rock: 0.5, PokemonType.steel: 0.5},
+  MoveType.psychic: {PokemonType.fighting: 2, PokemonType.poison: 2, PokemonType.psychic: 0.5, PokemonType.dark: 0, PokemonType.steel: 0.5},
+  MoveType.bug: {PokemonType.fire: 0.5, PokemonType.grass: 2, PokemonType.fighting: 0.5, PokemonType.poison: 0.5, PokemonType.flying: 0.5, PokemonType.psychic: 2, PokemonType.ghost: 0.5, PokemonType.dark: 2, PokemonType.steel: 0.5, PokemonType.fairy: 0.5},
+  MoveType.rock: {PokemonType.fire: 2, PokemonType.ice: 2, PokemonType.fighting: 0.5, PokemonType.ground: 0.5, PokemonType.flying: 2, PokemonType.bug: 2, PokemonType.steel: 0.5},
+  MoveType.ghost: {PokemonType.normal: 0, PokemonType.psychic: 2, PokemonType.ghost: 2, PokemonType.dark: 0.5},
+  MoveType.dragon: {PokemonType.dragon: 2, PokemonType.steel: 0.5, PokemonType.fairy: 0},
+  MoveType.dark: {PokemonType.fighting: 0.5, PokemonType.psychic: 2, PokemonType.ghost: 2, PokemonType.dark: 0.5, PokemonType.fairy: 0.5},
+  MoveType.steel: {PokemonType.fire: 0.5, PokemonType.water: 0.5, PokemonType.electric: 0.5, PokemonType.ice: 2, PokemonType.rock: 2, PokemonType.steel: 0.5, PokemonType.fairy: 2},
+  MoveType.fairy: {PokemonType.fire: 0.5, PokemonType.fighting: 2, PokemonType.poison: 0.5, PokemonType.dragon: 2, PokemonType.dark: 2, PokemonType.steel: 0.5},
 };
 
 class Battle {
@@ -36,6 +34,9 @@ class Battle {
 WeatherState weatherobj;
   Battle({required this.pokemon1, required this.pokemon2, required this.weatherobj});
 
+
+
+
   void selectMove(Move move, bool isPokemon1) {
     if (isPokemon1) {
       move1 = move;
@@ -44,14 +45,16 @@ WeatherState weatherobj;
     }
   }
 
-  double getTypeEffectiveness(String attackType, List<String> defenderTypes) {
+  double getTypeEffectiveness(MoveType attackType, List<PokemonType> defenderTypes) {
     double effectiveness = 1.0;
+    // String attackTypeStr = attackType.toString().split('.').last;
     for (var defenderType in defenderTypes) {
       if (typeEffectiveness[attackType] != null &&
           typeEffectiveness[attackType]![defenderType] != null) {
         effectiveness *= typeEffectiveness[attackType]![defenderType]!;
       }
     }
+    print("typeEffectiveness working $effectiveness");
     return effectiveness;
   }
 
@@ -110,15 +113,15 @@ WeatherState weatherobj;
         case Weather.none:
           break;
         case Weather.intenseSun:
-          if (move.type == 'FIRE') {
+          if (move.type == MoveType.fire) {
             pow = move.power;
             move.power = (move.power * 2).round();
-          } else if (move.type == 'WATER') {
+          } else if (move.type == MoveType.water) {
             pow = move.power;
             move.power = (move.power * 0.5).round();
             // } else if (move.name == 'Solar Beam' || move.name == 'Solar Blade') {
             // move.chargingRequired = false;
-          } else if (move.name == 'Thunder' || move.name == 'Hurricane') {
+          } else if (move.name == MoveName.thunder || move.name == MoveName.hurricane) {
             acc = move.accuracy;
             move.accuracy = (move.accuracy * 0.5).round();
           }
@@ -128,13 +131,13 @@ WeatherState weatherobj;
           weatherEffect = "The sun is shining intensely!\n";
 
         case Weather.rain:
-          if (move.type == 'WATER') {
+          if (move.type == MoveType.water) {
             pow = move.power;
             move.power = (move.power * 2).round();
-          } else if (move.type == 'FIRE') {
+          } else if (move.type ==MoveType.fire) {
             pow = move.power;
             move.power = (move.power * 0.5).round();
-          } else if (move.name == 'Thunder' || move.name == 'Hurricane') {
+          } else if (move.name == MoveName.thunder || move.name == MoveName.hurricane) {
             acc = move.accuracy;
             move.accuracy = 100;
           }
@@ -145,21 +148,21 @@ WeatherState weatherobj;
           weatherEffect = "It's raining heavily!\n";
 
         case Weather.hail:
-          if (!attacker.type.contains('ICE')) {
+          if (!attacker.type.contains(PokemonType.ice)) {
             int hailDamage = ((0.0625) * attacker.maxHp)
                 .round(); // Hail damage is 1/16 of max HP
             attacker.hp -= hailDamage;
             weatherEffect =
             "${attacker.name} is buffeted by the hail! Damage $hailDamage\n";
           }
-          if (!defender.type.contains('ICE')) {
+          if (!defender.type.contains(PokemonType.ice)) {
             int hailDamage = ((0.0625) * defender.maxHp)
                 .round(); // Hail damage is 1/16 of max HP
             defender.hp -= hailDamage;
             weatherEffect =
             "${defender.name} is buffeted by the hail! Damage $hailDamage\n";
           }
-          if (move.name == 'Blizzard') {
+          if (move.name == MoveName.blizzard) {
             acc = move.accuracy;
             move.accuracy = 100; // Blizzard guaranteed hit in hail
           }
@@ -170,33 +173,29 @@ WeatherState weatherobj;
           weatherEffect = "Hail is pelting down!\n";
 
         case Weather.sandstorm:
-          if (!attacker.type.contains('ROCK') &&
-              !attacker.type.contains('GROUND') &&
-              !attacker.type.contains('STEEL')) {
+          if (!attacker.type.contains(PokemonType.rock) &&
+              !attacker.type.contains(PokemonType.ground) &&
+              !attacker.type.contains(PokemonType.steel)) {
             int sandstormDamage = ((0.0625) * attacker.maxHp)
                 .round(); // Sandstorm damage is 1/16 of max HP
             attacker.hp -= sandstormDamage;
             weatherEffect = "${attacker
                 .name} is buffeted by the sandstorm! Damage $sandstormDamage\n";
           }
-          if (!defender.type.contains('ROCK') &&
-              !defender.type.contains('GROUND') &&
-              !defender.type.contains('STEEL')) {
+          if (!defender.type.contains(PokemonType.rock) &&
+              !defender.type.contains(PokemonType.ground) &&
+              !defender.type.contains(PokemonType.steel)) {
             int sandstormDamage = ((0.0625) * defender.maxHp)
                 .round(); // Sandstorm damage is 1/16 of max HP
             defender.hp -= sandstormDamage;
             weatherEffect = "${defender
                 .name} is buffeted by the sandstorm! Damage $sandstormDamage\n";
-            if (defender.type.contains('ROCK')) {
+            if (defender.type.contains(PokemonType.rock)) {
               defSD = defender.specialDefense;
               defender.specialDefense = (defender.specialDefense * 1.5)
                   .round(); // Rock-types get 50% extra special defense
             }
           }
-
-          // if (move.name == 'Synthesis' || move.name == 'Morning Sun' || move.name == 'Moonlight') {
-          //   move.healingPower = (move.healingPower * 0.5).round(); // Weakened healing moves
-          // }
 
           weatherEffect = "A sandstorm is raging!\n";
 
@@ -212,13 +211,12 @@ WeatherState weatherobj;
     // getAbilityEffectiveness(attacker, move);
 // print(abilityEffectiveness);
       /////////////////weather call
-      // if(weather!=)
-      updateWeather(Weather.rain);
-      print("data");
+
+      // updateWeather(Weather.rain);
       /////////////////weather call
 
     int damage;
-    if (move.style == "special") {
+    if (move.style == MoveStyle.special) {
       damage = ((0.5 * move.power *
           (attacker.specialAttack / defender.specialDefense) *
           typeEffectiveness * abilityEffectiveness)).round();

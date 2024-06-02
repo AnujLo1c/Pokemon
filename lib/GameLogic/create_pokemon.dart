@@ -13,17 +13,11 @@ class CreatePokemon {
     required int baseSpecialDefense,
     required int baseSpeed,
     required List<Move> moves,
-    required List<String> type,
+    required List<PokemonType> type,
     required String ability,
     required int accuracy,
     required int evasion,
     required int level,
-    int hpEV = 0,
-    int attackEV = 0,
-    int defenseEV = 0,
-    int specialAttackEV = 0,
-    int specialDefenseEV = 0,
-    int speedEV = 0,
   }) {
     // Generate IVs and Nature
     final hpIV = generateRandomIV();
@@ -35,12 +29,12 @@ class CreatePokemon {
     final nature = generateRandomNature();
 
     // Calculate stats
-    int genhp = calculateHpStat(base: baseHp, iv: hpIV, ev: hpEV, level: level);
-    int genattack = calculateOtherStat(base: baseAttack, iv: attackIV, ev: attackEV, level: level);
-    int gendefense = calculateOtherStat(base: baseDefense, iv: defenseIV, ev: defenseEV, level: level);
-    int genspecialAttack = calculateOtherStat(base: baseSpecialAttack, iv: specialAttackIV, ev: specialAttackEV, level: level);
-    int genspecialDefense = calculateOtherStat(base: baseSpecialDefense, iv: specialDefenseIV, ev: specialDefenseEV, level: level);
-    int genspeed = calculateOtherStat(base: baseSpeed, iv: speedIV, ev: speedEV, level: level);
+    int genhp = calculateHpStat(base: baseHp, iv: hpIV, ev: 0, level: level);
+    int genattack = calculateOtherStat(base: baseAttack, iv: attackIV, ev: 0, level: level);
+    int gendefense = calculateOtherStat(base: baseDefense, iv: defenseIV, ev: 0, level: level);
+    int genspecialAttack = calculateOtherStat(base: baseSpecialAttack, iv: specialAttackIV, ev: 0, level: level);
+    int genspecialDefense = calculateOtherStat(base: baseSpecialDefense, iv: specialDefenseIV, ev: 0, level: level);
+    int genspeed = calculateOtherStat(base: baseSpeed, iv: speedIV, ev: 0, level: level);
 
     // Apply nature changes
     applyNature(nature, genhp, genattack, gendefense, genspecialAttack, genspecialDefense, genspeed);
@@ -60,18 +54,19 @@ class CreatePokemon {
       accuracy: accuracy,
       evasion: evasion,
       level: level,
+      abilityIndex: 0,
       hpIV: hpIV,
       attackIV: attackIV,
       defenseIV: defenseIV,
       specialAttackIV: specialAttackIV,
       specialDefenseIV: specialDefenseIV,
       speedIV: speedIV,
-      hpEV: hpEV,
-      attackEV: attackEV,
-      defenseEV: defenseEV,
-      specialAttackEV: specialAttackEV,
-      specialDefenseEV: specialDefenseEV,
-      speedEV: speedEV,
+      hpEV: 0,
+      attackEV: 0,
+      defenseEV: 0,
+      specialAttackEV: 0,
+      specialDefenseEV: 0,
+      speedEV: 0,
       nature: nature,
       // hp: hp,
       // attack: attack,
@@ -145,29 +140,29 @@ class CreatePokemon {
 
 // List of natures
 final List<Nature> natures = [
-  Nature("Adamant", "attack", "specialAttack"),
-  Nature("Bashful", "", ""),  // Neutral
-  Nature("Bold", "defense", "attack"),
-  Nature("Brave", "attack", "speed"),
-  Nature("Calm", "specialDefense", "attack"),
-  Nature("Careful", "specialDefense", "specialAttack"),
-  Nature("Docile", "", ""),  // Neutral
-  Nature("Gentle", "specialDefense", "defense"),
-  Nature("Hardy", "", ""),  // Neutral
-  Nature("Hasty", "speed", "defense"),
-  Nature("Impish", "defense", "specialAttack"),
-  Nature("Jolly", "speed", "specialAttack"),
-  Nature("Lax", "defense", "specialDefense"),
-  Nature("Lonely", "attack", "defense"),
-  Nature("Mild", "specialAttack", "defense"),
-  Nature("Modest", "specialAttack", "attack"),
-  Nature("Naive", "speed", "specialDefense"),
-  Nature("Naughty", "attack", "specialDefense"),
-  Nature("Quiet", "specialAttack", "speed"),
-  Nature("Quirky", "", ""),  // Neutral
-  Nature("Rash", "specialAttack", "specialDefense"),
-  Nature("Relaxed", "defense", "speed"),
-  Nature("Sassy", "specialDefense", "speed"),
-  Nature("Serious", "", ""),  // Neutral
-  Nature("Timid", "speed", "attack"),
+  Nature(NatureName.adament, "attack", "specialAttack"),
+  Nature(NatureName.bashful, "", ""),  // Neutral
+  Nature(NatureName.bold, "defense", "attack"),
+  Nature(NatureName.brave, "attack", "speed"),
+  Nature(NatureName.calm, "specialDefense", "attack"),
+  Nature(NatureName.careful, "specialDefense", "specialAttack"),
+  Nature(NatureName.docile, "", ""),  // Neutral
+  Nature(NatureName.gentle, "specialDefense", "defense"),
+  Nature(NatureName.hardy, "", ""),  // Neutral
+  Nature(NatureName.hasty, "speed", "defense"),
+  Nature(NatureName.impish, "defense", "specialAttack"),
+  Nature(NatureName.jolly, "speed", "specialAttack"),
+  Nature(NatureName.lax, "defense", "specialDefense"),
+  Nature(NatureName.lonely, "attack", "defense"),
+  Nature(NatureName.mild, "specialAttack", "defense"),
+  Nature(NatureName.modest, "specialAttack", "attack"),
+  Nature(NatureName.naive, "speed", "specialDefense"),
+  Nature(NatureName.naughty, "attack", "specialDefense"),
+  Nature(NatureName.quiet, "specialAttack", "speed"),
+  Nature(NatureName.quirky, "", ""),  // Neutral
+  Nature(NatureName.rash, "specialAttack", "specialDefense"),
+  Nature(NatureName.relaxed, "defense", "speed"),
+  Nature(NatureName.sassy, "specialDefense", "speed"),
+  Nature(NatureName.serious, "", ""),  // Neutral
+  Nature(NatureName.timid, "speed", "attack"),
 ];

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../GameLogic/battle.dart';
@@ -13,6 +12,7 @@ class BattleScreen extends StatefulWidget {
   const BattleScreen({super.key});
 
   @override
+
   _BattleScreenState createState() => _BattleScreenState();
 }
 
@@ -125,12 +125,7 @@ class _BattleScreenState extends State<BattleScreen> {
     0.998767676767678,
     1.0
   ];
-  // updateWeather(Weather nw){
-  //   print("weather1");
-  //   setState(() {
-  //     weather.value=nw;
-  //   });
-  // }
+
   @override
   void initState() {
     super.initState();
@@ -188,43 +183,48 @@ class _BattleScreenState extends State<BattleScreen> {
         baseSpeed: 90,
         moves: [
           Move(
-              name: 'Thunder Bolt',
-              style: 'special',
-              type: 'ELECTRIC',
+              name: MoveName.thunderbolt,
+              style: MoveStyle.special,
+              type: MoveType.electric,
               power: 90,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 80,
-              pp: 15),
+              pp: 15,
+              effectProbability: 0,
+          ),
           Move(
-              name: 'Quick Attack',
-              style: 'physical',
-              type: 'NORMAL',
+              name: MoveName.quickAttack,
+              style:MoveStyle.physical,
+              type: MoveType.normal,
               power: 40,
               alwaysGoFirst: true,
               effect: '',
               accuracy: 100,
+              effectProbability: 0,
               pp: 30),
           Move(
-              name: 'Tackle',
-              style: 'physical',
-              type: 'NORMAL',
+              name: MoveName.tackle,
+              style: MoveStyle.physical,
+              type: MoveType.normal,
               power: 40,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 100,
+              effectProbability: 0,
               pp: 35),
           Move(
-              name: 'Iron Tail',
-              style: 'physical',
-              type: 'STEEL',
+              name: MoveName.ironTail,
+              style: MoveStyle.physical,
+              type: MoveType.steel,
               power: 100,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 75,
+              effectProbability: 0,
               pp: 15),
         ],
-        type: ['ELECTRIC'],
+        type: [PokemonType.electric],
         accuracy: 6,
         evasion: 6,
         level: 90,
@@ -241,44 +241,48 @@ class _BattleScreenState extends State<BattleScreen> {
         baseSpeed: 65,
         moves: [
           Move(
-              name: 'Flamethrower',
-              type: 'FIRE',
-              style: 'special',
+              name: MoveName.flamethrower,
+              type: MoveType.fire,
+              style: MoveStyle.special,
               power: 90,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 100,
+              effectProbability: 0,
               pp: 15),
           Move(
-              name: 'Slash',
-              type: 'NORMAL',
-              style: 'physical',
+              name: MoveName.slash,
+              type: MoveType.normal,
+              style: MoveStyle.physical,
               power: 70,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 100,
+              effectProbability: 0,
               pp: 20),
           Move(
-              name: 'Scratch',
-              type: 'NORMAL',
-              style: 'physical',
+              name: MoveName.scratch,
+              type: MoveType.normal,
+              style: MoveStyle.physical,
               power: 40,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 100,
+              effectProbability: 0,
               pp: 35),
           Move(
-              name: 'Ember',
-              type: 'FIRE',
-              style: 'special',
+              name: MoveName.ember,
+              type: MoveType.fire,
+              style: MoveStyle.special,
               power: 40,
               alwaysGoFirst: false,
               effect: '',
               accuracy: 100,
+              effectProbability: 0,
               pp: 25),
         ],
         ability: 'Blaze',
-        type: ['FIRE'],
+        type: [PokemonType.fire],
         accuracy: 6,
         evasion: 6,
         level: 80,
@@ -287,12 +291,6 @@ class _BattleScreenState extends State<BattleScreen> {
       battle = Battle(pokemon1: pokemon1, pokemon2: pokemon2,weatherobj: weatherObj);
       battleLog = '';
       _battleStarted = false;
-    });
-  }
-
-  void _updateWeather(Weather newWeather) {
-    setState(() {
-      weatherObj.updateWeather(newWeather);
     });
   }
 
@@ -319,12 +317,12 @@ class _BattleScreenState extends State<BattleScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            if (!_battleStarted) ...[
+            if (!_battleStarted)
               ElevatedButton(
                 onPressed: _startBattle,
                 child: const Text('Start Battle'),
-              ),
-            ] else ...[
+              )
+            else
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -334,7 +332,7 @@ class _BattleScreenState extends State<BattleScreen> {
                       for (var move in pokemon1.moves)
                         ElevatedButton(
                           onPressed: () => _selectMove(move, true),
-                          child: Text(move.name),
+                          child: Text(move.name.toString().split('.')[1]),
                         ),
                     ],
                   ),
@@ -344,13 +342,13 @@ class _BattleScreenState extends State<BattleScreen> {
                       for (var move in pokemon2.moves)
                         ElevatedButton(
                           onPressed: () => _selectMove(move, false),
-                          child: Text(move.name),
+                          child: Text(move.name.toString().split('.')[1]),
                         ),
                     ],
                   ),
                 ],
               ),
-            ],
+
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _resetBattle,
@@ -361,8 +359,6 @@ class _BattleScreenState extends State<BattleScreen> {
               battleLog,
               style: const TextStyle(fontSize: 16),
             ),
-
-
 
           ],
         ),

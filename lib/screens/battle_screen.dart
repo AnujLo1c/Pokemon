@@ -15,7 +15,8 @@ class BattleScreen extends StatefulWidget {
 
   _BattleScreenState createState() => _BattleScreenState();
 }
-
+//////////To add
+//Critical Hit///////////////////////////////////////////////////////////////
 class _BattleScreenState extends State<BattleScreen> {
   late Pokemon pokemon1;
   late Pokemon pokemon2;
@@ -228,7 +229,7 @@ class _BattleScreenState extends State<BattleScreen> {
         accuracy: 6,
         evasion: 6,
         level: 90,
-        ability: 'Lightning rod',
+        ability: [PokemonAbility.lightningRod,PokemonAbility.pressure],
       );
 
       pokemon2 = CreatePokemon().createPokemon(
@@ -281,7 +282,7 @@ class _BattleScreenState extends State<BattleScreen> {
               effectProbability: 0,
               pp: 25),
         ],
-        ability: 'Blaze',
+        ability: [PokemonAbility.blaze,PokemonAbility.pressure],
         type: [PokemonType.fire],
         accuracy: 6,
         evasion: 6,

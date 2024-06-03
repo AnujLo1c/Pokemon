@@ -25,9 +25,11 @@ class PokemonInfoCard extends StatelessWidget {
             Text('Special Attack: ${pokemon.specialAttack}'),
             Text('Special Defense: ${pokemon.specialDefense}'),
             Text('Speed: ${pokemon.speed}'),
-            Text('Ability: ${pokemon.ability}'),
+            Text('Ability: ${pokemon.ability[pokemon.abilityIndex].toString()}'),
             Text('Type: ${pokemon.type.join(", ")}'),
             Text('Level: ${pokemon.level}'),
+            Text('Status: ${pokemon.statusCondition}'),
+            Text('nature: ${pokemon.nature.name}'),
 
             const SizedBox(height: 8),
             const Text('Moves:'),

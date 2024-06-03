@@ -14,7 +14,7 @@ class CreatePokemon {
     required int baseSpeed,
     required List<Move> moves,
     required List<PokemonType> type,
-    required String ability,
+    required List<PokemonAbility> ability,
     required int accuracy,
     required int evasion,
     required int level,
@@ -27,6 +27,16 @@ class CreatePokemon {
     final specialDefenseIV = generateRandomIV();
     final speedIV = generateRandomIV();
     final nature = generateRandomNature();
+    // final nature = natures[0];
+    // disp(nature, baseHp, baseAttack, baseDefense, baseSpecialAttack, baseSpecialDefense, baseSpeed);
+    List afterNatureStates=applyNature(nature, baseHp, baseAttack, baseDefense, baseSpecialAttack, baseSpecialDefense, baseSpeed);
+    baseHp=afterNatureStates[0];
+    baseAttack=afterNatureStates[1];
+    baseDefense=afterNatureStates[2];
+    baseSpecialAttack=afterNatureStates[3];
+    baseSpecialDefense=afterNatureStates[4];
+    baseSpeed=afterNatureStates[5];
+    // disp(nature, baseHp, baseAttack, baseDefense, baseSpecialAttack, baseSpecialDefense, baseSpeed);
 
     // Calculate stats
     int genhp = calculateHpStat(base: baseHp, iv: hpIV, ev: 0, level: level);
@@ -37,17 +47,16 @@ class CreatePokemon {
     int genspeed = calculateOtherStat(base: baseSpeed, iv: speedIV, ev: 0, level: level);
 
     // Apply nature changes
-    applyNature(nature, genhp, genattack, gendefense, genspecialAttack, genspecialDefense, genspeed);
 
     return Pokemon(
       name: name,
-      hp: baseHp,
-      maxHp: baseHp,
-      attack: baseAttack,
-      defense: baseDefense,
-      specialAttack: baseSpecialAttack,
-      specialDefense: baseSpecialDefense,
-      speed: baseSpeed,
+      hp: genhp,
+      maxHp: genhp,
+      attack: genattack,
+      defense: gendefense,
+      specialAttack: genspecialAttack,
+      specialDefense: genspecialDefense,
+      speed: genspeed,
       moves: moves,
       type: type,
       ability: ability,
@@ -68,15 +77,19 @@ class CreatePokemon {
       specialDefenseEV: 0,
       speedEV: 0,
       nature: nature,
-      // hp: hp,
-      // attack: attack,
-      // defense: defense,
-      // specialAttack: specialAttack,
-      // specialDefense: specialDefense,
-      // speed: speed,
+
     );
   }
-
+  void disp(Nature nature, int genHp, int genAttack, int genDefense, int genSpecialAttack, int genSpecialDefense, int genSpeed) {
+    print('Nature: ${nature.name}');
+    print('HP: $genHp');
+    print('Attack: $genAttack');
+    print('Defense: $genDefense');
+    print('Special Attack: $genSpecialAttack');
+    print('Special Defense: $genSpecialDefense');
+    print('Speed: $genSpeed');
+    print("////////////////////////////");
+  }
   int generateRandomIV() {
     final random = Random();
     return random.nextInt(32);
@@ -95,7 +108,7 @@ class CreatePokemon {
     return ((((iv + 2 * base + (ev / 4)) * level) / 100) + 5).floor();
   }
 
-  void applyNature(Nature nature,int hp, int attack,  int defense, int specialAttack,  int specialDefense, int speed) {
+  List<int> applyNature(Nature nature,int hp, int attack,  int defense, int specialAttack,  int specialDefense, int speed) {
   if (nature.increases.isNotEmpty) {
   switch (nature.increases) {
   case 'attack':
@@ -135,7 +148,9 @@ class CreatePokemon {
   break;
   }
   }
-  }
+  List<int> natureAppliedStates=[hp,attack,defense,specialAttack,specialDefense,speed];
+  return natureAppliedStates;
+    }
 }
 
 // List of natures

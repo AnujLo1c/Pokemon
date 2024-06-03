@@ -75,9 +75,7 @@ WeatherState weatherobj;
     double accuracyMultiplier = getStageModifier(effectiveStage);
     double finalAccuracy = move.accuracy * accuracyMultiplier;
     double hitChance = (finalAccuracy).clamp(0, 100);
-// print(accuracyMultiplier);
-//     print(hitChance);
-//     print(randomValue);
+
     return randomValue <= hitChance;
   }
 
@@ -196,22 +194,19 @@ WeatherState weatherobj;
                   .round(); // Rock-types get 50% extra special defense
             }
           }
-
           weatherEffect = "A sandstorm is raging!\n";
 
         default:
           weatherEffect = '';
       }
     }
-    //////////////weather effect
 
     if (willHit(attacker,defender,move)) {
     double typeEffectiveness = getTypeEffectiveness(move.type, defender.type);
     double abilityEffectiveness = 1.0;
-    // getAbilityEffectiveness(attacker, move);
-// print(abilityEffectiveness);
       /////////////////weather call
 
+// weatherEffect+= attacker.setPokemonStatus(PokemonStatus.burn);
       // updateWeather(Weather.rain);
       /////////////////weather call
 
@@ -220,10 +215,12 @@ WeatherState weatherobj;
       damage = ((0.5 * move.power *
           (attacker.specialAttack / defender.specialDefense) *
           typeEffectiveness * abilityEffectiveness)).round();
-    } else {
+    } else if(move.style==MoveStyle.physical){
       damage = ((0.5 * move.power * (attacker.attack / defender.defense) *
           typeEffectiveness * abilityEffectiveness)).round();
-
+    }
+    else{
+      damage=1;
     }
 
     defender.receiveDamage(damage);
@@ -231,10 +228,12 @@ WeatherState weatherobj;
     (acc!=null)?move.accuracy=acc:null;
     (defSD!=null)?defender.specialDefense=defSD:null;
 
+      weatherEffect+=attacker.statusBattleEachTurnEffect();
     return '${attacker.name} uses ${move.name} on ${defender
         .name} for $damage damage! (Type Effectiveness: ${typeEffectiveness}x)\n$weatherEffect';
   }
     else{
+      weatherEffect+=attacker.statusBattleEachTurnEffect();
       return "${attacker.name}'s ${move.name} doesn't hit!\n$weatherEffect";
     }
 
